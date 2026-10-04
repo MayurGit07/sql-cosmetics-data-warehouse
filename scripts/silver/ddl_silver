@@ -1,6 +1,6 @@
 /*
 ===============================================================================
-SQL - 04.Silver_Table
+SQL - 05.Create_silvertbl
 ===============================================================================
 Script Purpose:
     This script creates the 'silver.cosmetics' table used for storing the
