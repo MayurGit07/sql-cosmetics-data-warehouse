@@ -1,6 +1,6 @@
 /*
 ===============================================================================
-SQL - 03.Bronze_Load
+SQL - 03.bulk_insert
 ===============================================================================
 Script Purpose:
     This script creates a stored procedure to load the raw cosmetics data
