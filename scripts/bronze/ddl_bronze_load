@@ -1,0 +1,46 @@
+/*
+===============================================================================
+SQL - 03.Bronze_Load
+===============================================================================
+Script Purpose:
+    This script creates a stored procedure to load the raw cosmetics data
+    from the CSV file into the 'bronze.cosmetics' table.
+
+    The existing Bronze table is cleared before loading the data. Basic
+    error handling is also included to display a message if the data load
+    fails.
+
+    After creating the procedure, it is executed and the loaded data is
+    displayed for verification.
+
+===============================================================================
+*/
+
+CREATE OR ALTER PROCEDURE bronze.load_bronze
+AS
+BEGIN TRY
+
+    TRUNCATE TABLE bronze.cosmetics;
+
+    BULK INSERT bronze.cosmetics
+    FROM 'C:\Users\MAYUR CHAVAN\Downloads\Planilha sem ttulo - cscpopendata.csv'
+    WITH
+    (
+        FORMAT = 'CSV',
+        FIRSTROW = 2,
+        FIELDQUOTE = '"'
+    );
+
+END TRY
+
+BEGIN CATCH
+
+    PRINT 'There was some error in loading';
+    PRINT 'The error message was: ' + ERROR_MESSAGE();
+
+END CATCH;
+GO
+
+EXECUTE bronze.load_bronze;
+
+select* from bronze.cosmetics
