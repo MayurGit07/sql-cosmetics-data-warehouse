@@ -1,0 +1,34 @@
+/*
+===============================================================================
+SQL - 01.Schema   , thsi is for my personnel use to help me navigate the code in my saved SQl querries in my pc
+===============================================================================
+Script Purpose:
+    This script creates the CosmeticsProject database and sets up the
+    Bronze, Silver, and Gold schemas used throughout the project.
+
+    If the database already exists, it is dropped and recreated so the
+    project can be set up from a clean starting point.
+
+===============================================================================
+*/
+
+if exists(
+select * from sys.databases where name = 'CosmeticsProject')
+begin
+use master
+drop database CosmeticsProject
+end
+
+go
+
+create database CosmeticsProject
+go
+use CosmeticsProject
+
+go				--go as schmea must be 1st statemnet in BATCH
+create schema bronze    
+go
+create schema silver
+go
+create schema gold
+go
