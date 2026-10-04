@@ -1,1 +1,81 @@
+/*
+===============================================================================
+SQL - 04.Silver_Table
+===============================================================================
+Script Purpose:
+    This script creates the 'silver.cosmetics' table used for storing the
+    cleaned and transformed cosmetics data from the Bronze layer.
 
+    The table structure is first created with the raw data types and then
+    updated to use appropriate data types for dates and numeric values after
+    the required transformations.
+
+    Existing tables are dropped before recreation so the Silver layer can
+    be rebuilt with the updated structure.
+
+===============================================================================
+*/
+
+
+use CosmeticsProject
+if object_id ('silver.cosmetics') is not null
+	drop table silver.cosmetics
+go
+create table silver.cosmetics(
+cdph_id           int,
+prdt_name         varchar(300),
+csf_id           int,
+csf				varchar(300),
+company_id           int,
+company_name				varchar(300),
+brand_name				varchar(300),
+pr_cat_id           int,
+pr_cat_name				varchar(300),
+sb_cat_id           int,
+sb_cat_name				varchar(300),
+cas_id           int,
+cas_num			varchar(300),
+chem_id           int,
+chem_name			varchar(300),
+initial_date_report		VARCHAR(300),
+recent_date_report		VARCHAR(300),
+discont_date		VARCHAR(300),
+chem_crte		VARCHAR(300),
+chem_updt		VARCHAR(300),
+chem_remove		VARCHAR(300),
+chem_count		VARCHAR(300)
+)
+
+select * from silver.cosmetics
+select* from CosmeticsProject.silver.cosmetics
+
+--UPDATED DDL after tansfroming necessary colmns/data
+
+use CosmeticsProject
+if object_id ('silver.cosmetics') is not null
+	drop table silver.cosmetics
+go
+create table silver.cosmetics(
+cdph_id           int,
+prdt_name         varchar(300),
+csf_id           int,
+csf				varchar(300),
+company_id           int,
+company_name				varchar(300),
+brand_name				varchar(300),
+pr_cat_id           int,
+pr_cat_name				varchar(300),
+sb_cat_id           int,
+sb_cat_name				varchar(300),
+cas_id           int,
+cas_num			varchar(300),
+chem_id           int,
+chem_name			varchar(300),
+initial_date_report		date,
+recent_date_report		date,
+discont_date		date,
+chem_crte		date,
+chem_updt		date,
+chem_remove		date,
+chem_count		int
+)
