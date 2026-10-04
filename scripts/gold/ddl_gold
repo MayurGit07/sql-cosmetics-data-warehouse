@@ -1,6 +1,6 @@
 /*
 ===============================================================================
-SQL - 06.Gold_View_Analysis
+SQL - 08.Gold
 ===============================================================================
 Script Purpose:
     This script creates the 'gold.cosmetics' view using the cleaned data from
