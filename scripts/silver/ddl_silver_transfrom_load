@@ -13,6 +13,7 @@ Script Purpose:
     After the required transformations, the cleaned data is inserted into
     the Silver layer with the appropriate column names and data types.
 
+    In the end we also make a Stored Procedure of the above code 
 ===============================================================================
 */
 
@@ -169,3 +170,72 @@ END
 as chemical_removed_at ,
 chem_count          chemical_count
 from bronze.cosmetics
+
+--STORED PROCEDURE
+use CosmeticsProject 
+go
+create or alter procedure silver.load_cosmetics as
+	begin
+		PRINT 'Truncating silver.cosmetics'
+		TRUNCATE TABLE silver.cosmetics
+		PRINT 'Insertig silver.cosmetics '
+		insert into silver.cosmetics(
+       cdph_id,
+       [prdt_name] 
+      ,[csf_id]
+      ,[csf]
+      ,[company_id]
+      ,[company_name]
+      ,[brand_name]
+      ,[pr_cat_id]
+      ,[pr_cat_name]
+      ,[sb_cat_id]
+      ,[sb_cat_name]
+      ,[cas_id]
+      ,[cas_num]
+      ,[chem_id]
+      ,[chem_name]
+      ,[initial_date_report]
+      ,[recent_date_report]
+      ,[discont_date]
+      ,[chem_crte]
+      ,[chem_updt]
+      ,[chem_remove]
+      ,[chem_count]
+)
+        select 
+        prdt_id ,
+        prdt_name  as product_name,
+        csf_id,
+        coalesce(cast(csf as varchar),'n/a') as csf_code,
+        company_id,
+        company_name,
+        trim(coalesce(cast(brand_name as varchar),'n/a')) as brand_name,
+        pr_cat_id       primary_catatgory_id,
+        pr_cat_name             primary_catatgory_name,
+        sb_cat_id        subcatagory_id,
+        sb_cat_name             subcatagory_name,
+        cas_id          cas_id,
+        trim(coalesce(cas_num,'n/a'))  cas_number ,
+        chem_id                  chemical_id,
+        trim(coalesce(chem_name,'n/a')) chemical_name,
+        TRY_CONVERT(date, initial_date_report, 101)  initial_date_report,
+        TRY_CONVERT(date, recent_date_report, 101)      recent_date_report,
+        TRY_CONVERT(date, discont_date, 101)        discontinued_date,
+        TRY_CONVERT(date, chem_crte, 101)       chemical_created_at,
+        TRY_CONVERT(date, chem_updt, 101)       chemical_updated_at,
+        CASE
+            WHEN TRY_CONVERT(date, chem_remove, 101) >=
+                 TRY_CONVERT(date, initial_date_report, 101)
+            THEN TRY_CONVERT(date, chem_remove, 101)
+            ELSE NULL
+        END
+        as chemical_removed_at ,
+        chem_count          chemical_count
+        from bronze.cosmetics
+
+
+end
+
+use CosmeticsProject
+execute silver.load_cosmetics
