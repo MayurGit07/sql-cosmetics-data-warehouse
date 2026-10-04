@@ -1,0 +1,40 @@
+/*
+===============================================================================
+SQL - 06.Gold_View_Analysis
+===============================================================================
+Script Purpose:
+    This script creates the 'gold.cosmetics' view using the cleaned data from
+    the Silver layer. The Gold layer is prepared for business analysis and
+    reporting by using clear column names and an analysis-ready structure.
+
+    The script also contains analytical queries to explore the cosmetics data,
+    including chemical frequency, company reporting patterns, yearly trends,
+    product reporting activity, and changes in chemical reporting over time.
+
+    The final analysis compares the yearly share of selected chemicals such
+    as titanium dioxide, silica, and talc to identify changes in their
+    presence across different years.
+
+===============================================================================
+*/
+
+
+/*
+===============================================================================
+SQL - 06.Gold_View_Analysis
+===============================================================================
+Script Purpose:
+    This script creates the 'gold.cosmetics' view using the cleaned data from
+    the Silver layer. The Gold layer is prepared for business analysis and
+    reporting by using clear column names and an analysis-ready structure.
+
+    The script also contains analytical queries to explore the cosmetics data,
+    including chemical frequency, company reporting patterns, yearly trends,
+    product reporting activity, and changes in chemical reporting over time.
+
+    The final analysis compares the yearly share of selected chemicals such
+    as titanium dioxide, silica, and talc to identify changes in their
+    presence across different years.
+
+===============================================================================
+*/
