@@ -1,6 +1,6 @@
 /*
 ===============================================================================
-SQL - 02.Bronze_Table
+SQL - 02.Bronze_DDL
 ===============================================================================
 Script Purpose:
     This script creates the 'bronze.cosmetics' table used to store the
