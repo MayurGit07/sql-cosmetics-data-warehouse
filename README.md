@@ -1,2 +1,4 @@
-# sql-cosmetics-data-warehouse
-300charateres A SQL-based Cosmetics Data Warehouse inspired by my teacher’s project and adapted to my Oils, Oleochemicals &amp; Surfactant background. Built independently using Bronze, Silver &amp; Gold layers, with AI used for guidance and debugging when needed.
+This project is a SQL-based Cosmetics Data Warehouse that I developed as a way to apply what I have been learning in SQL and Data Engineering to a domain related to my academic background.
+The project was inspired by a data warehouse project I worked on under my teacher's guidance, which helped me understand the overall approach and structure. From there, I developed my own version around cosmetics and chemical data, connecting the project with my degree in Oils, Oleochemicals and Surfactant Technology.
+I worked through the project independently, making my own decisions about the dataset, transformations, database structure, and analysis. I also used AI as a learning and debugging aid whenever I got stuck, but the overall direction, implementation, and ideas behind the project were my own.
+The main objective was not just to practice SQL queries, but to understand how raw data can be loaded, cleaned, transformed, structured into a data warehouse, and finally used for analysis.
