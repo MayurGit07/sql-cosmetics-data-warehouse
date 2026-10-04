@@ -1,0 +1,171 @@
+/*
+===============================================================================
+SQL - 05.Silver_Transform_Load
+===============================================================================
+Script Purpose:
+    This script checks and transforms the data from the Bronze layer before
+    loading it into the 'silver.cosmetics' table.
+
+    The transformations include handling missing values, trimming text,
+    checking data types, converting date columns, and applying basic date
+    validation rules.
+
+    After the required transformations, the cleaned data is inserted into
+    the Silver layer with the appropriate column names and data types.
+
+===============================================================================
+*/
+
+--trasnform
+
+select * from CosmeticsProject.bronze.cosmetics
+--id
+select * from CosmeticsProject.bronze.cosmetics where prdt_id is null  -- no null
+select count(*) from CosmeticsProject.bronze.cosmetics where prdt_id not like '%[^0-9]%'   --all prdt_id same
+
+
+--prdt_name
+select * from CosmeticsProject.bronze.cosmetics where prdt_name is null   --NO
+
+--csfid
+--select * from CosmeticsProject.bronze.cosmetics where is null
+select * from CosmeticsProject.bronze.cosmetics where csf_id like '%[^0-9]%'   --NO invalid character (exceopt null)
+
+--csf and csfid terat
+select coalesce(cast(csf_id as varchar),'n/a')  from CosmeticsProject.bronze.cosmetics where csf_id is null
+select coalesce(csf,'n/a') from CosmeticsProject.bronze.cosmetics where csf is null
+
+--comp id
+select * from CosmeticsProject.bronze.cosmetics where company_id is null    select * from CosmeticsProject.bronze.cosmetics where company_id  like '%[^0-9]%'    --NO prob
+
+--comp name and brand
+select * from bronze.cosmetics where company_name != trim(company_name)  --all good
+select * from bronze.cosmetics where brand_name!= trim(brand_name)   --problemn    soln   select trim(brand_name) from bronze.cosmetics
+
+----prt_cat_id
+--select * from CosmeticsProject.bronze.cosmetics where pr_cat_id is null or pr_cat_id like '%[^0-9]%'   --no sisue
+----prdt_catname
+--select * from bronze.cosmetics where pr_cat_name!= trim(pr_cat_name)   --no issue
+
+----sub_cat_id
+--select * from CosmeticsProject.bronze.cosmetics where sb_cat_id is null or sb_cat_id like '%[^0-9]%'   --no sisue
+----sub_catname
+--select * from bronze.cosmetics where sb_cat_name!= trim(sb_cat_name) 
+
+--casid
+select * from CosmeticsProject.bronze.cosmetics where cas_id is null or cas_id like '%[^0-9]%'   --no sisue
+--casnum
+select coalesce(cas_num,'n/a') from CosmeticsProject.bronze.cosmetics where cas_num is null
+
+--chemid and name
+select * from CosmeticsProject.bronze.cosmetics where chem_id is null
+select * from CosmeticsProject.bronze.cosmetics where chem_name is null
+
+
+--DATE
+--    1. NULL  fro all one by one
+           SELECT *FROM bronze.cosmetics WHERE discont_date IS NULL                      SELECT *FROM bronze.cosmetics WHERE chem_remove IS NULL
+--		2.
+--to chehk for any non date format  --all good herer
+SELECT initial_date_report
+FROM bronze.cosmetics
+WHERE initial_date_report IS NOT NULL
+  AND TRY_CONVERT(date, initial_date_report, 101) IS NULL;  --to see f everything can be converted to DATE datttype in silver
+
+SELECT *
+FROM bronze.cosmetics
+WHERE recent_date_report IS NOT NULL
+  AND TRY_CONVERT(date, recent_date_report, 101) IS NULL; 
+
+
+SELECT *
+FROM bronze.cosmetics
+WHERE discont_date IS NOT NULL
+  AND TRY_CONVERT(date, discont_date, 101) IS NULL; 
+
+  
+SELECT *
+FROM bronze.cosmetics
+WHERE chem_crte IS NOT NULL
+  AND TRY_CONVERT(date, chem_crte, 101) IS NULL; 
+  
+SELECT *
+FROM bronze.cosmetics
+WHERE chem_updt IS NOT NULL
+  AND TRY_CONVERT(date, chem_updt, 101) IS NULL; 
+  
+SELECT *
+FROM bronze.cosmetics
+WHERE chem_remove IS NOT NULL
+  AND TRY_CONVERT(date, chem_remove, 101) IS NULL; 
+
+  
+
+
+
+--2.  IMPORPER initial date
+
+select * from bronze.cosmetics where TRY_CONVERT(date, initial_date_report, 101) > TRY_CONVERT(date, recent_date_report, 101)   --NO problem
+select * from bronze.cosmetics where TRY_CONVERT(date, initial_date_report, 101) > TRY_CONVERT(date, chem_remove, 101)   --ERROR rows
+select * from bronze.cosmetics where TRY_CONVERT(date, initial_date_report, 101) > TRY_CONVERT(date, chem_updt, 101)   --no prob
+
+
+--chem coun
+select * from bronze.cosmetics where chem_count like '%[^0-9]%' or chem_count is null   -- no porblem
+
+use CosmeticsProject
+go
+insert into silver.cosmetics(
+       cdph_id,
+       [prdt_name]
+      ,[csf_id]
+      ,[csf]
+      ,[company_id]
+      ,[company_name]
+      ,[brand_name]
+      ,[pr_cat_id]
+      ,[pr_cat_name]
+      ,[sb_cat_id]
+      ,[sb_cat_name]
+      ,[cas_id]
+      ,[cas_num]
+      ,[chem_id]
+      ,[chem_name]
+      ,[initial_date_report]
+      ,[recent_date_report]
+      ,[discont_date]
+      ,[chem_crte]
+      ,[chem_updt]
+      ,[chem_remove]
+      ,[chem_count]
+)
+select 
+prdt_id as cdph_id,   --we will rename clmns in diffenrt layer (gold)
+prdt_name  as product_name,
+csf_id,
+coalesce(cast(csf as varchar),'n/a') as csf_code,
+company_id,
+company_name,
+trim(coalesce(cast(brand_name as varchar),'n/a')) as brand_name,
+pr_cat_id       primary_catatgory_id,
+pr_cat_name             primary_catatgory_name,
+sb_cat_id        subcatagory_id,
+sb_cat_name             subcatagory_name,
+cas_id          cas_id,
+trim(coalesce(cas_num,'n/a'))  cas_number ,
+chem_id                  chemical_id,
+trim(coalesce(chem_name,'n/a')) chemical_name,
+TRY_CONVERT(date, initial_date_report, 101)  initial_date_report,        --the company/collegues gives use solution so that we can treat NULL/imporper dates
+TRY_CONVERT(date, recent_date_report, 101)      recent_date_report,
+TRY_CONVERT(date, discont_date, 101)        discontinued_date,
+TRY_CONVERT(date, chem_crte, 101)       chemical_created_at,
+TRY_CONVERT(date, chem_updt, 101)       chemical_updated_at,
+CASE
+    WHEN TRY_CONVERT(date, chem_remove, 101) >=
+         TRY_CONVERT(date, initial_date_report, 101)
+    THEN TRY_CONVERT(date, chem_remove, 101)
+    ELSE NULL
+END
+as chemical_removed_at ,
+chem_count          chemical_count
+from bronze.cosmetics
