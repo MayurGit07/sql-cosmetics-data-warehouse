@@ -1,6 +1,6 @@
 /*
 ===============================================================================
-SQL - 05.Silver_Transform_Load
+SQL - 06.tranformn,07.StrdPrcdr
 ===============================================================================
 Script Purpose:
     This script checks and transforms the data from the Bronze layer before
